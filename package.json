@@ -1,15 +1,18 @@
 {
-  "name": "sptfy-playlist-yt-mp3",
-  "version": "1.0.0",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
-  "dependencies": {
-    "puppeteer": "^23.3.0"
-  }
+    "name": "sptfy-playlist-yt-mp3",
+    "version": "1.0.0",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "description": "",
+    "dependencies": {
+        "dotenv": "^16.4.5",
+        "inquirer": "^10.2.2",
+        "puppeteer": "^23.3.0"
+    },
+    "type": "module"
 }
