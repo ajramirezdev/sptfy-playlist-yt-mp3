@@ -5,6 +5,12 @@ import { setTimeout } from "node:timers/promises";
 import "dotenv/config";
 
 const tracks = [];
+const youtubeLinks = [];
+
+const startScript = async () => {
+    await getPlaylistSongs();
+    await getYoutubeLinks();
+};
 
 const getPlaylistSongs = async () => {
     const browser = await puppeteer.launch({
@@ -67,6 +73,10 @@ const getPlaylistSongs = async () => {
         )
         .click();
 
+    await page.locator('div[data-testid="playlist-tracklist"]').click();
+    await page.keyboard.press("End");
+    await setTimeout(2000);
+
     console.log(`Fetching tracks from the playlist...`);
 
     await setTimeout(2000);
@@ -85,6 +95,47 @@ const getPlaylistSongs = async () => {
     });
 
     console.log(tracks);
+
+    await browser.close();
 };
 
-getPlaylistSongs();
+const getYoutubeLinks = async () => {
+    // if (tracks.length === 0) {
+    //     console.log("Empty tracklist.");
+    //     return;
+    // }
+
+    const browser = await puppeteer.launch({
+        headless: false,
+    });
+    const page = await browser.newPage();
+
+    await page.goto("https://www.youtube.com/");
+    await page.setViewport({ width: 1440, height: 1024 });
+
+    await page.waitForSelector("#search");
+
+    for (const element of tracks) {
+        await page.locator("input#search").fill(element);
+        await page.locator("button#search-icon-legacy").click();
+        await setTimeout(2000);
+        await page.waitForSelector(
+            "div#contents ytd-video-renderer ytd-thumbnail > a#thumbnail"
+        );
+
+        const content = await page.content();
+        const $ = cheerio.load(content);
+
+        const link = $(
+            `div#contents ytd-video-renderer ytd-thumbnail > a#thumbnail`
+        ).attr("href");
+
+        console.log(`https://www.youtube.com/${link}`);
+
+        youtubeLinks.push(`https://www.youtube.com/${link}`);
+    }
+
+    console.log(youtubeLinks);
+};
+
+startScript();
